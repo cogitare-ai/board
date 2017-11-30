@@ -10,16 +10,16 @@
                     <system-usage :execution='execution'></system-usage>
                 </b-tab>
                 <b-tab title="General Dashboard">
-                    Tab Contents 2
+                    <dashboard :execution='execution'></dashboard>
                 </b-tab>
                 <b-tab title="Execution Graph">
-                    Tab Contents 2
+                    <graph :execution='execution'></graph>
                 </b-tab>
                 <b-tab title="Dataset Explorer">
-                    Tab Contents 2
+                    <dataset :execution='execution'></dataset>
                 </b-tab>
                 <b-tab title="Experimenter">
-                    Tab Contents 2
+                    <experimenter :execution='execution'></experimenter>
                 </b-tab>
             </b-tabs>
         </b-card>
@@ -29,12 +29,20 @@
 <script>
 import details from './view/system-details'
 import usage from './view/system-usage'
+import dashboard from './view/dashboard'
+import graph from './view/graph'
+import dataset from './view/dataset'
+import experimenter from './view/experimenter'
 
 export default {
     name: 'Viewer',
     components: {
         'system-details': details,
-        'system-usage': usage
+        'system-usage': usage,
+        'dashboard': dashboard,
+        'graph': graph,
+        'dataset': dataset,
+        'experimenter': experimenter
     },
     watch: {
         '$route': function (to, from) {

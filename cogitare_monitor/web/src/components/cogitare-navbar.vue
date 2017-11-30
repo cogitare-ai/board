@@ -10,7 +10,7 @@
                 <b-nav is-nav-bar>
                     <b-nav-item href="http://docs.cogitare-ai.org/" target="_blank">Docs</b-nav-item>
                     <b-nav-item href="http://github.com/cogitare-ai/cogitare" target="_blank">Github</b-nav-item>
-                    <b-nav-item href="http://github.com/cogitare-ai/monitor-plugins" target="_blank">Plugins</b-nav-item>
+                    <!--<b-nav-item href="http://github.com/cogitare-ai/monitor-plugins" target="_blank">Plugins</b-nav-item>-->
                 </b-nav>
 
                 <b-nav is-nav-bar class="ml-auto">

@@ -3,10 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 import BootstrapVue from 'bootstrap-vue'
-import router from './router'
+import { router } from './router'
 import VueSocketIO from 'vue-socket.io'
 import notify from './notify.js'
 import Vuex from 'vuex'
+import script2 from 'vue-script2'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -14,6 +15,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 export const MONITOR_HOST = 'http://0.0.0.0:8787'
 
 Vue.use(Vuex)
+Vue.use(script2)
 
 const store = new Vuex.Store({
     state: {
@@ -33,7 +35,10 @@ const store = new Vuex.Store({
 
         SOCKET_ADD_EXECUTION: function (state, data) {
             Vue.set(state.executions, data.id, data)
-            window.notify.showInfo('Execution', data.name + ' connected.')
+
+            window.notify.showInfo('Execution', data.name + ' connected.', function () {
+                router.push({path: `view/${data.id}`})
+            })
         },
 
         SOCKET_DISCONNECT_EXECUTION: function (state, id) {
@@ -44,6 +49,17 @@ const store = new Vuex.Store({
 
         SOCKET_REMOVE_EXECUTION: function (state, id) {
             Vue.delete(state.executions, id)
+        },
+
+        SOCKET_UPDATE_MACHINE: function (state, data) {
+            var id = data['id']
+            var machine = data['machine']
+
+            Vue.set(state.executions[id], 'machine', machine)
+        },
+
+        SOCKET_ADD_USAGE_PLOT: function (state, plot) {
+            Vue.set(state.executions[plot.id]._plots, plot.name, plot)
         },
 
         setHost: function (state, host) {

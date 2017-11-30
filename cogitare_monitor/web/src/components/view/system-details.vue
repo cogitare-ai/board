@@ -1,11 +1,12 @@
 <template>
-    <b-container fluid class='system-details'>
+    <b-container fluid class='system-details' v-if='execution != null'>
         <b-row>
             <b-col><h3>{{execution.name}}</h3></b-col>
         </b-row>
+        <b-row><b-col><p class="text-muted">{{execution.description}}</p></b-col></b-row>
         <hr>
         <b-row>
-            <b-card title="System Details" class='w-100' sub-title="Basic details of the machine running this Execution. CPU, GPU, RAM, etcs.">
+            <b-card v-if='execution.machine' title="System Details" class='w-100' sub-title="Basic details of the machine running this Execution. CPU, GPU, RAM, etcs.">
                 <br>
 
                 <b-container fluid>
@@ -26,6 +27,16 @@
                     </b-row>
                     <hr>
                     <b-row v-if='!execution.machine.nvidia'><b-col class='col-2'><b>GPUs</b></b-col><b-col>Could not get GPU information (if using, check if NVML is installed). </b-col></b-row>
+                    <div v-if='execution.machine.nvidia'>
+                        <b-row><b-col class='col-2'><b>Nvidia Driver Version</b></b-col><b-col>{{execution.machine.gpu.driver_version}}</b-col></b-row>
+                        <div v-for='(gpu, index) for gpu in execution.machine.gpu.devices' :key='index'>
+                            <br>
+                            <b-row ><b-col class='col-2'><b>GPU {{index + 1}}</b></b-col><b-col>{{gpu.name}}</b-col></b-row>
+                            <b-row ><b-col class='col-2'><b>Graphic Clock</b></b-col><b-col>{{gpu.clock}} Mhz | Max {{gpu.clock_max}} Mhz</b-col></b-row>
+                            <b-row ><b-col class='col-2'><b>Memory Clock</b></b-col><b-col>{{gpu.clock_mem}} Mhz | Max {{gpu.clock_mem_max}} Mhz</b-col></b-row>
+                            <b-row ><b-col class='col-2'><b>Memory</b></b-col><b-col>{{gpu.memory}} GBs</b-col></b-row>
+                        </div>
+                    </div>
                     <hr>
 
                     <b-row><b-col class='col-2'><b>Python Version: </b></b-col><b-col>{{execution.machine.python_version}}</b-col></b-row>
