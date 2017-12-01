@@ -1,9 +1,14 @@
 import re
+from bokeh.models import HoverTool
 from bokeh.plotting import curdoc, figure
 from bokeh.client import push_session
 from bokeh.embed import server_session
 from bokeh.models import ColumnDataSource
+from bokeh.models import PrintfTickFormatter
+from bokeh.palettes import Spectral
+import itertools
 time = 0
+colors = itertools.cycle(Spectral[9])
 
 
 class Plot:
@@ -12,6 +17,8 @@ class Plot:
         self._title = title
         tools = 'save'
         self._p = figure(title=title, x_axis_type=None, sizing_mode='stretch_both', tools=tools)
+        self._p.yaxis.axis_label = title
+        self._p.yaxis[0].formatter = PrintfTickFormatter(format='%7.2f')
         self._p.x_range.follow = 'end'
         self._p.x_range.follow_interval = 100
         self._p.x_range.range_padding = 0
@@ -19,9 +26,17 @@ class Plot:
         self.data = data or {}
         self.source = ColumnDataSource(data=self.data)
         self._script = None
+        self._last_line = None
+        self.tooltips = []
 
     def add_variable(self, name):
-        self._p.line(x='x', y=name, source=self.source)
+        color = next(colors)
+        self._last_line = self._p.line(x='x', y=name, source=self.source, line_width=2, line_alpha=0.8,
+                                       legend=' ' + name, line_color=color, muted_alpha=0.2, muted_color=color)
+        self._p.circle(x='x', y=name, source=self.source, legend=' ' + name, fill_color=None, line_color=color,
+                       muted_alpha=0.3, muted_color=color)
+
+        self.tooltips.append((name, '@{' + name + '}{%7.2f}'))
 
     def _create_plot(self):
         curdoc().add_root(self._p)
@@ -32,6 +47,18 @@ class Plot:
 
     def __str__(self):
         if self._script is None:
+            self._p.legend.orientation = "horizontal"
+            self._p.legend.location = "top_left"
+            self._p.legend.background_fill_alpha = 0.8
+            self._p.legend.click_policy = "mute"
+
+            formatters = dict((name, 'printf') for name, _ in self.tooltips)
+
+            self._p.add_tools(HoverTool(
+                renderers=[self._last_line],
+                tooltips=self.tooltips,
+                mode='vline',
+                formatters=formatters))
             self._create_plot()
         return self._script
 

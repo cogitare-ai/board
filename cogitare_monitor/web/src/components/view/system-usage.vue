@@ -64,10 +64,6 @@ export default {
                     s.setAttribute('data-bokeh-doc-id', '')
                     root.appendChild(s)
                 }
-
-                setTimeout(function () {
-                    window.dispatchEvent(new Event('resize'))
-                }, 500)
             }, 1000)
         }
     },
@@ -81,7 +77,7 @@ export default {
 
 <style>
 .plot-holder {
-    height: 250px;
+    height: 300px;
     padding: 10px;
 }
 </style>
